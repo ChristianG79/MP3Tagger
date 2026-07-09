@@ -1,27 +1,26 @@
 import sys
 import json
 import os
+import re
+import shutil
 import urllib.request
 import urllib.parse
 import urllib.error
-from pathlib import Path
-
 import threading
+from pathlib import Path
 
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QComboBox, QFileDialog,
     QMessageBox, QStatusBar, QMenuBar, QMenu, QGridLayout,
-    QFrame, QGroupBox, QTabWidget, QListWidget, QSplitter,
+    QGroupBox, QTabWidget, QListWidget, QSplitter,
     QAbstractItemView, QDialog,
-    QDialogButtonBox, QTextEdit, QHeaderView, QTableWidget,
-    QTableWidgetItem, QProgressDialog, QSlider, QSpacerItem
+    QDialogButtonBox, QHeaderView, QTableWidget,
+    QTableWidgetItem, QProgressDialog, QSlider
 )
-from PySide6.QtCore import Qt, Signal, QTimer, QPropertyAnimation, QPoint, QEasingCurve, QUrl
-from PySide6.QtGui import QAction, QIcon, QFont, QPixmap
+from PySide6.QtCore import Qt, Signal, QTimer, QPropertyAnimation, QEasingCurve, QUrl
+from PySide6.QtGui import QAction
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
-from PySide6.QtMultimediaWidgets import QVideoWidget
-from mutagen import File
 from mutagen.mp3 import MP3
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, ID3NoHeaderError
@@ -215,7 +214,7 @@ class AboutDialog(QDialog):
         title.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a73e8;")
         layout.addWidget(title)
 
-        version = QLabel("Version 1.0")
+        version = QLabel("Version 0.0.1")
         version.setAlignment(Qt.AlignCenter)
         version.setStyleSheet("font-size: 13px; color: #1a1a1a;")
         layout.addWidget(version)
@@ -712,7 +711,6 @@ class SearchOnlineDialog(QDialog):
         self.status_label.setText(self.lm.tr("status_processing"))
         self.search_btn.setEnabled(False)
 
-        import threading
         thread = threading.Thread(target=self._search_thread, args=(query,), daemon=True)
         thread.start()
 
@@ -1553,7 +1551,6 @@ class MainWindow(QMainWindow):
             }
 
             def safe(s):
-                import re
                 return re.sub(r'[<>:"/\\|?*]', '_', str(s))
 
             folder_part = folder_pattern
@@ -1578,7 +1575,6 @@ class MainWindow(QMainWindow):
                     target = target_dir / f"{base}_{cnt}{src.suffix}"
                     cnt += 1
             try:
-                import shutil
                 shutil.move(str(src), str(target))
                 moved += 1
             except Exception:
